@@ -13,9 +13,12 @@ const APIURL = `https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}/`;
 const fetchAllPlayers = async () => {
     try { 
         const response = await fetch(API+'/players');{
-            response=> response.json();
-            responseJson=> {console.log(responseJson)
-            console.log(responseJson.players)}
+           const data = await response.json()
+           console.log(data)
+            // response=> response.json();
+            //responseJson=> {console.log(responseJson)
+           // console.log(responseJson.players)}
+           
 
        // const result= await response.json();
         //const players= getElementById('players').value;
@@ -90,9 +93,21 @@ const removePlayer = async (playerId) => {
  * @returns the playerContainerHTML variable.
  */
 const renderAllPlayers = (playerList) => {
-    try { 
+    try {  
+       const puppyListConatiner= document.getElementById('all-players-container')
+       puppyListConatiner.innerHTML=""
+       playerList.forEach(player) => {
+        const card= document.createElement("div")
+        card.classList.add('puppies')
+        card.innerHTML= `
+        <span>${player.name}</span>
+        <span>${player.breed}</span>
+        <span>${player.status}</span `;
+       }
+    }
         
-    } catch (err) {
+        puppyListConatiner.appendChild(card)
+     catch (err) {
         console.error('Uh oh, trouble rendering players!', err);
     }
 };
@@ -102,8 +117,23 @@ const renderAllPlayers = (playerList) => {
  * It renders a form to the DOM, and when the form is submitted, it adds a new player to the database,
  * fetches all players from the database, and renders them to the DOM.
  */
-const renderNewPlayerForm = () => {
+const renderNewPlayerForm = (event) => {
+    event.preventDefault()
+    let name= newPlayerForm.name.value
+    let breed= newPlayerForm.breed.value
+    let status= newPlayerForm.status.value
+    let image= newPlayerForm.image.value
     try {
+        const response = await fetch(API+'players',{
+            method="POST",
+            headers:{"content-type": "application/json"},
+            body: JSON.stringify({
+                name,
+                breed,
+                status,
+                image
+            }) 
+        })
         
     } catch (err) {
         console.error('Uh oh, trouble rendering the new player form!', err);
